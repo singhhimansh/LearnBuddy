@@ -1,2 +1,2 @@
 # LearnBuddy
-LMS app for student to attend lectures and skill up
+LMS app for online education
