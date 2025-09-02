@@ -6,7 +6,6 @@ Manage dynamic classes then handle conflicting classes to avoid unexpected outco
 export const cn = (...classes: ClassValue[]): string =>
   twMerge(clsx(...classes));
 
-
 export const applyStyles =
   <T extends Record<string, string>>(baseStyles: T) =>
   (
@@ -25,3 +24,10 @@ export const applyStyles =
     }
     return mergedStyles;
   };
+
+export const CoursesStatusMap: Record<string, string> = {
+  notstarted: "Not Started",
+  inprogress: "In Progress",
+  completed: "Completed",
+  archived: "Archived",
+};

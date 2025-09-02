@@ -5,7 +5,7 @@ import { TCoursesResponse, TCoursesContentResponse } from "@/lib/types/courses.t
 const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:3000/api",
+    baseUrl:  `${process.env.NEXT_PUBLIC_BASE_URL}/api`,
     credentials: "include",
   }),
   endpoints: (builder) => ({

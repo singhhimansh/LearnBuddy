@@ -3,7 +3,7 @@ import { cn } from "../utils/common";
 
 export default function Badge({
   label,
-  variant="outline",
+  variant="ghost",
   className,
 }: {
   label: string;
@@ -19,5 +19,16 @@ export default function Badge({
     | "error";
   className?: ClassValue;
 }) {
-  return <span className={cn(`badge badge-${variant}`, className)}>{label}</span>;
+  const variantStyles = {
+    outline: "badge-outline",
+    ghost: "badge-ghost",
+    primary: "badge-primary",
+    secondary: "badge-secondary",
+    accent: "badge-accent",
+    info: "badge-info",
+    success: "badge-success",
+    warning: "badge-warning",
+    error: "badge-error",
+  };
+  return <span className={cn(`badge badge-soft`, variantStyles[variant] ,className)}>{label}</span>;
 }

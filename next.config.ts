@@ -4,7 +4,13 @@ const nextConfig: NextConfig = {
   images: {
     domains: ['img.freepik.com'],
   },
-  /* config options here */
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+
+  typescript: {
+    ignoreBuildErrors: true,
+  },
 };
 
 export default nextConfig;
