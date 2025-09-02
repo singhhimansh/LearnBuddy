@@ -46,10 +46,11 @@ LMS app for online education
 
 
 ## APIs 
-/auth/signup
-/auth/login
-/auth/logout
-/auth/user                        // get user details with enrolled courses
+```
+/auth/signup                      // signup new user
+/auth/login                       // login exisiting user
+/auth/logout                      // logout user
+/auth/user                        // get user details with 
 
 get /courses                      // all courses available
 get /courses/:courseId            // course content
@@ -57,11 +58,14 @@ get /courses/:courseId            // course content
 post /enroll/:courseId           // enrollment a course
 patch /enroll/:courseId          // update enrollment status like remove enroll etc
 
+```
 
 
-## DB Schemas
-`
 
+## Supabase DB Schemas
+
+
+```http
 users schema 
 RLS policy: public
 
@@ -149,6 +153,4 @@ create table public.lessons_progress (
   constraint lessons_progress_user_id_fkey foreign KEY (user_id) references users (id)
 ) TABLESPACE pg_default;
 
-
-`
-
+```
