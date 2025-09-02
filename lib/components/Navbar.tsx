@@ -56,7 +56,7 @@ export default function Navbar() {
   if (isUserLoading) return <Loader isLoading={isUserLoading} overlay />;
 
   return (
-    <div className="navbar bg-base-100 shadow-sm">
+    <div className="navbar bg-base-100 shadow-sm px-8">
       <div className="flex-1">
         <a className="btn btn-ghost text-xl">{en.navbar.title}</a>
       </div>
@@ -87,9 +87,9 @@ export default function Navbar() {
                   Profile
                 </a>
               </li>
-              <li>
+              {/* <li>
                 <a>Settings</a>
-              </li>
+              </li> */}
               <li>
                 <a onClick={handleLogout}>Logout</a>
               </li>

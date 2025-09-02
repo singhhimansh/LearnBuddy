@@ -12,7 +12,6 @@ import {
   useUpdateEnrollmentMutation,
 } from "@/lib/store/slices/apiSlice";
 import { setUser } from "@/lib/store/slices/userSlice";
-import Image from "next/image";
 import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -67,7 +66,7 @@ export default function Dashboard() {
       </Card>
 
       <section className="bg-base-200 p-5 px-8 border  border-base-300 rounded-lg">
-        <h3 className="font-semibold">Your Courses</h3>
+        <h3 className="font-semibold">Your Courses <span>({user?.enrolledCourses?.length})</span></h3>
         <p className="text-sm text-base-content">Pick up where you left</p>
         {userLoading && <Loader isLoading={userLoading} />}
         {!userLoading && user?.enrolledCourses?.length! > 0 ? (

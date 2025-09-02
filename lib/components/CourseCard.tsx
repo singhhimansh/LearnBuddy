@@ -66,9 +66,7 @@ export default function CourseCard({
       })
         .unwrap()
         .then((res) => {
-          console.log(res);
           Toast.info("Course withdrawn successfully");
-          // refetch();
         })
         .catch((error: any) => {
           Toast.error(
@@ -81,7 +79,6 @@ export default function CourseCard({
       enrollCourse({ courseId })
         .unwrap()
         .then((res) => {
-          console.log(res);
           Toast.success("Course enrolled successfully");
           // refetch();
         })
@@ -98,10 +95,10 @@ export default function CourseCard({
     <div className="card bg-base-100 min-w-88 max-w-88 shadow-sm hover:shadow-lg hover:scale-[1.02]  transition-all cursor-pointer">
       {/* <Image width={100} height={100} src={thumbnail} alt={title}  /> */}
       <div className="relative w-full h-40 rounded-t-2xl  overflow-hidden">
-        <Image
+        <img
           src={thumbnail}
           alt={title}
-          fill
+          className="w-full h-full object-cover"
           style={{ objectFit: "cover", overflow: "hidden" }}
         />
       </div>

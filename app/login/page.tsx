@@ -76,7 +76,6 @@ export default function Login() {
   const formik = useFormik<typeof initialValues>({
     initialValues: initialValues,
     onSubmit: (values) => {
-      console.log(values, isSigningUp);
       if (isSigningUp) {
         signup(values);
       } else {

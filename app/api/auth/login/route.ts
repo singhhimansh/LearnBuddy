@@ -26,8 +26,6 @@ export async function POST(request: NextRequest) {
       const userId = data.user?.id;
 
       const { data: profile, error: profileError } = await supabase.from("users").select("*").eq("id", userId).single();
-      console.log(profileError);
-      console.log(profile);
 
       if (profileError) {
         return NextResponse.json({ error: profileError?.message || "Internal server error" }, { status: 500 });
