@@ -66,7 +66,7 @@ export default function Dashboard() {
       </Card>
 
       <section className="bg-base-200 p-5 px-8 border  border-base-300 rounded-lg">
-        <h3 className="font-semibold">Your Courses <span>({user?.enrolledCourses?.length})</span></h3>
+        <h3 className="font-semibold">Your Courses <span>{user?.enrolledCourses?.length! > 0 && `(${user?.enrolledCourses?.length})`}</span></h3>
         <p className="text-sm text-base-content">Pick up where you left</p>
         {userLoading && <Loader isLoading={userLoading} />}
         {!userLoading && user?.enrolledCourses?.length! > 0 ? (
