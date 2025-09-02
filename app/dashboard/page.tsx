@@ -19,13 +19,15 @@ export default function Dashboard() {
     isLoading: coursesLoading,
   } = useGetAllCoursesQuery();
 
-
-  const availableCourses = useMemo(()=>{
-    const enrolledCourseIdSet= new Set(user?.enrolledCourses?.map((course) => course.courseId));
-    const unEnrolledCourses = coursesData?.data?.filter((course) => !enrolledCourseIdSet.has(course.id));
+  const availableCourses = useMemo(() => {
+    const enrolledCourseIdSet = new Set(
+      user?.enrolledCourses?.map((course) => course.courseId)
+    );
+    const unEnrolledCourses = coursesData?.data?.filter(
+      (course) => !enrolledCourseIdSet.has(course.id)
+    );
     return unEnrolledCourses;
-  },[coursesData,user]);
-
+  }, [coursesData, user]);
 
   return (
     <main className="flex flex-col justify-start gap-4 my-10">
@@ -43,23 +45,24 @@ export default function Dashboard() {
         </div>
       </Card>
 
-      <section className="bg-base-200 p-5 px-8 border border-base-300 rounded-lg">
+      <section className="bg-base-200 p-5 px-8 border  border-base-300 rounded-lg">
         <h3 className="font-semibold">Your Courses</h3>
         <p className="text-sm text-base-content">Pick up where you left</p>
-        <div className="flex flex-col justify-start gap-2 my-6">
+        <div className="flex flex-col justify-start  gap-5 my-6">
           {user?.enrolledCourses?.map((course) => (
-            <CourseCard key={course.courseId} {...course} />
+            <CourseCard key={course.courseId} enrolled={true} {...course} />
           ))}
         </div>
       </section>
+
       <section className="bg-base-200 p-5  px-8 border border-base-300 rounded-lg  ">
         <h3 className="font-semibold">What's trending</h3>
         <p className="text-sm text-base-content">Recommended courses for you</p>
         {coursesLoading && <Loader isLoading={coursesLoading} />}
-        {!coursesLoading && availableCourses?.length! >0 ? (
+        {!coursesLoading && availableCourses?.length! > 0 ? (
           <div className="flex  overflow-x-auto py-4 justify-start  gap-5 my-6">
             {availableCourses?.map((course) => (
-              <CourseCard key={course.id} {...course} />
+              <CourseCard key={course.id} enrolled={false} {...course} />
             ))}
           </div>
         ) : (

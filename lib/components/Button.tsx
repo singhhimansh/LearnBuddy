@@ -16,7 +16,6 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 export default function Button({
-  className,
   isLoading,
   label,
   onClick,
@@ -38,9 +37,9 @@ export default function Button({
   return (
     <button
       className={styles.button}
-      {...props}
       disabled={disabled || isLoading}
       onClick={onClick}
+      {...props}
     >
       {isLoading && (
         <span className="loading loading-spinner loading-sm"></span>
