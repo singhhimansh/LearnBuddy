@@ -1,9 +1,11 @@
+import { GetUserResponse } from "@/lib/types/user.types";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 const apiSlice = createApi({
-  reducerPath: "server",
+  reducerPath: "api",
   baseQuery: fetchBaseQuery({
     baseUrl: "http://localhost:3000/api",
+    credentials: "include",
   }),
   endpoints: (builder) => ({
     login: builder.mutation({
@@ -20,14 +22,20 @@ const apiSlice = createApi({
         body,
       }),
     }),
-    getUser: builder.query({
+    getUser: builder.query<GetUserResponse, void>({
       query: () => ({
         url: "/user",
         method: "GET",
       }),
     }),
+    logout: builder.mutation({
+      query: () => ({
+        url: "/auth/logout",
+        method: "POST",
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation, useSignupMutation, useGetUserQuery } = apiSlice;
+export const { useLoginMutation, useSignupMutation, useGetUserQuery, useLogoutMutation } = apiSlice;
 export default apiSlice;

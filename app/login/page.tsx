@@ -8,9 +8,11 @@ import {
   useLoginMutation,
   useSignupMutation,
 } from "@/lib/store/slices/apiSlice";
+import { setUser } from "@/lib/store/slices/userSlice";
 import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import * as yup from "yup";
 
 const initialValues = {
@@ -46,6 +48,7 @@ const signUpSchema = yup.object({
 
 export default function Login() {
   const router = useRouter();
+  const dispatch = useDispatch();
   const [isSigningUp, setIsSigningUp] = useState(false);
 
   const [
@@ -88,9 +91,10 @@ export default function Login() {
 
   useEffect(() => {
     if (loginSuccess || signupSuccess) {
+      dispatch(setUser(isSigningUp ? signupData?.data : loginData?.data))
       router.push(APP_ROUTES.DASHBOARD);
     }
-  }, [loginSuccess, signupSuccess]);
+  }, [loginSuccess, signupSuccess, isSigningUp, signupData, loginData]);
 
   return (
     <div className="flex justify-center items-center mt-40">

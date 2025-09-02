@@ -4,7 +4,7 @@ import { applyStyles, cn } from "../utils/common";
 import { ClassValue } from "clsx";
 
 const baseStyles = {
-  button: "btn btn-xs sm:btn-sm md:btn-md rounded-lg",
+  button: "btn btn-md rounded-lg",
   label: "",
 };
 
