@@ -47,7 +47,6 @@ export default function Input({
         <input
           type={type}
           placeholder={placeholder + (required ? " *" : "")}
-          required={required}
           className={styles.input}
           {...props}
         />
