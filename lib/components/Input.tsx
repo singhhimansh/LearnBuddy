@@ -6,9 +6,8 @@ import { ClassValue } from "clsx";
 
 const baseStyles = {
   label: "floating-label",
-  input: "input",
+  input: "input w-full",
 };
-
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
@@ -32,23 +31,29 @@ export default function Input({
   placeholder,
   startAdornment,
   endAdornment,
-  floatingLabel=true,
+  required,
+  floatingLabel = true,
   sx,
+  error,
   ...props
 }: InputProps) {
   const styles = applyStyles(baseStyles)(sx);
   return (
-    <label className={styles.label}>
-      {startAdornment}
+    <div className="flex flex-col justify-start">
+      <label className={styles.label}>
+        {startAdornment}
 
-      <span>{label}</span>
-      <input
-        type={type}
-        placeholder={placeholder}
-        className={styles.input}
-        {...props}
-      />
-      {endAdornment}
-    </label>
+        <span>{label}{ required ? " *" : ""}</span>
+        <input
+          type={type}
+          placeholder={placeholder + (required ? " *" : "")}
+          required={required}
+          className={styles.input}
+          {...props}
+        />
+        {endAdornment}
+      </label>
+      {error && <p className="pl-3 mt-1 text-xs text-red-500">{error}</p>}
+    </div>
   );
 }
