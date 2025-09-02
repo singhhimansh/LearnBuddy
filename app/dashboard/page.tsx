@@ -3,21 +3,49 @@ import Avatar from "@/lib/components/Avatar";
 import Card from "@/lib/components/CardContainer";
 import CourseCard from "@/lib/components/CourseCard";
 import Loader from "@/lib/components/Loader";
+import Toast from "@/lib/components/Toast";
 import { StoreState } from "@/lib/store";
-import { useGetAllCoursesQuery } from "@/lib/store/slices/apiSlice";
+import {
+  useEnrollCourseMutation,
+  useGetAllCoursesQuery,
+  useGetUserQuery,
+  useUpdateEnrollmentMutation,
+} from "@/lib/store/slices/apiSlice";
+import { setUser } from "@/lib/store/slices/userSlice";
 import Image from "next/image";
 import { useEffect, useMemo } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function Dashboard() {
   const user = useSelector((state: StoreState) => state.user.user);
-  // const courses = useSelector((state: StoreState) => state.courses.courses);
+  const dispatch = useDispatch();
+
+  const { data: userquery, error: userError, isLoading: userLoading, isFetching, refetch } = useGetUserQuery(undefined, {
+  });
+
+
+  useEffect(() => {
+    if (userquery?.data) {
+      dispatch(setUser(userquery?.data));
+    }
+  }, [userquery]);
+
+
 
   const {
     data: coursesData,
     error: coursesError,
     isLoading: coursesLoading,
   } = useGetAllCoursesQuery();
+
+  const [
+    updateEnrollment,
+    { error: updateEnrollmentError, isLoading: updateEnrollmentLoading },
+  ] = useUpdateEnrollmentMutation();
+  const [
+    enrollCourse,
+    { error: enrollCourseError, isLoading: enrollCourseLoading },
+  ] = useEnrollCourseMutation();
 
   const availableCourses = useMemo(() => {
     const enrolledCourseIdSet = new Set(
@@ -28,6 +56,49 @@ export default function Dashboard() {
     );
     return unEnrolledCourses;
   }, [coursesData, user]);
+
+  const handleEnroll = ({
+    courseId,
+    status,
+    enrolled,
+  }: {
+    courseId: string | number;
+    status?: string;
+    enrolled?: boolean;
+  }) => {
+    if (enrolled) {
+      // patch api
+      updateEnrollment({ enrolmentId: courseId, body: { status:"inprogress" } })
+        .unwrap()
+        .then((res) => {
+          console.log(res);
+          Toast.info("Course withdrawn successfully");
+          // refetch();
+        })
+        .catch((error:any) => {
+          Toast.error(
+            error?.data?.error || error?.message || "Internal server error" 
+          );
+          console.log(error);
+        });
+    } else {
+      // post api
+      enrollCourse({ courseId })
+        .unwrap()
+        .then((res) => {
+          console.log(res);
+          Toast.success("Course enrolled successfully");
+          // refetch();
+        })
+        .catch((error:any) => {
+          console.log(error);
+          Toast.error(
+            error?.data?.error || error?.message || "Internal server error"
+          );
+          console.log(error);
+        });
+    }
+  };
 
   return (
     <main className="flex flex-col justify-start gap-4 my-10">
@@ -48,11 +119,22 @@ export default function Dashboard() {
       <section className="bg-base-200 p-5 px-8 border  border-base-300 rounded-lg">
         <h3 className="font-semibold">Your Courses</h3>
         <p className="text-sm text-base-content">Pick up where you left</p>
-        <div className="flex flex-col justify-start  gap-5 my-6">
+        {(userLoading) && <Loader isLoading={userLoading} />}
+        { !userLoading && user?.enrolledCourses?.length! > 0 ? (
+          <div className="flex  overflow-x-auto py-4 justify-start  gap-5 my-6">
           {user?.enrolledCourses?.map((course) => (
-            <CourseCard key={course.courseId} enrolled={true} {...course} />
+            <CourseCard
+              key={course.courseId}
+              enrolled={true}
+              {...course}
+              isLoading={userLoading || isFetching ||updateEnrollmentLoading }
+              handleClick={handleEnroll}
+            />
           ))}
-        </div>
+          </div>
+        ) : (
+            user?.enrolledCourses?.length! === 0 && <p>No courses is enrolled</p>
+        )}
       </section>
 
       <section className="bg-base-200 p-5  px-8 border border-base-300 rounded-lg  ">
@@ -62,7 +144,14 @@ export default function Dashboard() {
         {!coursesLoading && availableCourses?.length! > 0 ? (
           <div className="flex  overflow-x-auto py-4 justify-start  gap-5 my-6">
             {availableCourses?.map((course) => (
-              <CourseCard key={course.id} enrolled={false} {...course} />
+              <CourseCard
+                key={course.id}
+                courseId={course.id}
+                enrolled={false}
+                isLoading={coursesLoading || enrollCourseLoading }
+                {...course}
+                handleClick={handleEnroll}
+              />
             ))}
           </div>
         ) : (

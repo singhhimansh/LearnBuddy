@@ -11,16 +11,22 @@ type CourseCardProps = {
   thumbnail: string;
   status?: string;
   enrolled?: boolean;
+  courseId: string | number;
+  isLoading?: boolean;
+  handleClick: ({ courseId, status, enrolled }: { courseId: string | number; status?: string; enrolled?: boolean })=> void
 };
 
-export default function CourseCard({
+export default function CourseCard({  
+  courseId,
   title,
   description,
   thumbnail,
   keywords,
   author,
+  isLoading,
   enrolled,
   status,
+  handleClick,
 }: CourseCardProps) {
   return (
     <div className="card bg-base-100 min-w-88 max-w-88 shadow-sm hover:shadow-lg hover:scale-[1.02]  transition-all cursor-pointer">
@@ -35,9 +41,7 @@ export default function CourseCard({
       </div>
 
       <div className="card-body ">
-        <h5 className="card-title  truncate">
-          {title}
-        </h5>
+        <h5 className="card-title  truncate">{title}</h5>
         <div className="flex justify-between items-center">
           <p className="text-xs  font-mono text-secondary">By {author}</p>
           {status && (
@@ -63,9 +67,16 @@ export default function CourseCard({
         </div>
         <div className="card-actions mt-4 flex justify-center">
           <Button
-            sx={{button:"w-full"}}
+            sx={{ button: "w-full" }}
             label={enrolled ? "Withdraw" : "Enroll Now"}
-            onClick={() => {}}
+            isLoading={isLoading}
+            onClick={() =>
+              handleClick({
+                courseId,
+                enrolled,
+                status: enrolled ? "WITHDRAWN" : "",
+              })
+            }
             variant={enrolled ? "outline" : "primary"}
           />
         </div>

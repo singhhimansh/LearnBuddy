@@ -1,11 +1,16 @@
 import { GetUserResponse } from "@/lib/types/user.types";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { TCoursesResponse, TCoursesContentResponse } from "@/lib/types/courses.types";
+import {
+  TCoursesResponse,
+  TCoursesContentResponse,
+} from "@/lib/types/courses.types";
+import { RTK_TAGS } from "@/lib/constants/tags";
 
 const apiSlice = createApi({
   reducerPath: "api",
+  tagTypes: [RTK_TAGS.COURSES, RTK_TAGS.ENROLLMENTS, RTK_TAGS.USER],
   baseQuery: fetchBaseQuery({
-    baseUrl:  `${process.env.NEXT_PUBLIC_BASE_URL}/api`,
+    baseUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/api`,
     credentials: "include",
   }),
   endpoints: (builder) => ({
@@ -24,6 +29,7 @@ const apiSlice = createApi({
       }),
     }),
     getUser: builder.query<GetUserResponse, void>({
+      providesTags: [RTK_TAGS.USER],
       query: () => ({
         url: "/user",
         method: "GET",
@@ -36,18 +42,35 @@ const apiSlice = createApi({
       }),
     }),
     getAllCourses: builder.query<TCoursesResponse, void>({
+      providesTags: [RTK_TAGS.COURSES],
       query: () => ({
         url: "/courses",
         method: "GET",
       }),
     }),
     getCourseContentById: builder.query<
-    TCoursesContentResponse,
+      TCoursesContentResponse,
       { courseId: string }
     >({
       query: ({ courseId }) => ({
         url: `/courses/${courseId}`,
         method: "GET",
+      }),
+    }),
+    enrollCourse: builder.mutation({
+      invalidatesTags: [RTK_TAGS.USER, RTK_TAGS.COURSES],
+      query: (body) => ({
+        url: `/enroll`,
+        method: "POST",
+        body,
+      }),
+    }),
+    updateEnrollment: builder.mutation({
+      invalidatesTags: [RTK_TAGS.USER, RTK_TAGS.COURSES],
+      query: ({ enrolmentId, body }) => ({
+        url: `/enroll/${enrolmentId}`,
+        method: "PATCH",
+        body,
       }),
     }),
   }),
@@ -60,5 +83,7 @@ export const {
   useLogoutMutation,
   useGetAllCoursesQuery,
   useGetCourseContentByIdQuery,
+  useEnrollCourseMutation,
+  useUpdateEnrollmentMutation,
 } = apiSlice;
 export default apiSlice;

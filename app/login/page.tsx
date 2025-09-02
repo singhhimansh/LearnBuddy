@@ -3,6 +3,7 @@
 import Button from "@/lib/components/Button";
 import Card from "@/lib/components/CardContainer";
 import Input from "@/lib/components/Input";
+import Toast from "@/lib/components/Toast";
 import APP_ROUTES from "@/lib/constants/appRoutes";
 import {
   useLoginMutation,
@@ -91,10 +92,21 @@ export default function Login() {
 
   useEffect(() => {
     if (loginSuccess || signupSuccess) {
-      dispatch(setUser(isSigningUp ? signupData?.data : loginData?.data))
+      Toast.success(isSigningUp ? "Sign up successful" : "Login successful");
+      dispatch(setUser(isSigningUp ? signupData?.data : loginData?.data));
       router.push(APP_ROUTES.DASHBOARD);
+    } else if (loginError || signupError) {
+      Toast.error(isSigningUp ? "Sign up failed" : "Login failed");
     }
-  }, [loginSuccess, signupSuccess, isSigningUp, signupData, loginData]);
+  }, [
+    loginSuccess,
+    signupSuccess,
+    isSigningUp,
+    signupData,
+    loginData,
+    loginError,
+    signupError,
+  ]);
 
   return (
     <div className="max-w-[500px] mx-auto flex justify-center items-center mt-40">

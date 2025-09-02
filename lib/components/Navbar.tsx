@@ -11,6 +11,7 @@ import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import Avatar from "./Avatar";
 import Loader from "./Loader";
+import Toast from "./Toast";
 
 export default function Navbar() {
   const user = useSelector((state: StoreState) => state.user.user);
@@ -37,16 +38,17 @@ export default function Navbar() {
   }, [data, isUserSuccess]);
 
   const isLoggedIn = Boolean(user);
-  console.log(isLoggedIn, user);
 
   const handleLogout = () => {
     logout({})
       .unwrap()
       .then(() => {
+        Toast.success("User logged out!");
         dispatch(setUser(null));
         router.push(APP_ROUTES.LOGIN);
       })
       .catch((err) => {
+        Toast.error("Logout failed");
         console.log("Logout failed", err);
       });
   };

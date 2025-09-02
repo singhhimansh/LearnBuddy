@@ -55,8 +55,8 @@ LMS app for online education
 get /courses                      // all courses available
 get /courses/:courseId            // course content
 
-post /enroll/:courseId           // enrollment a course
-patch /enroll/:courseId          // update enrollment status like remove enroll etc
+post /enroll                      // enrollment a course
+patch /enroll/:courseId           // update enrollment status like remove enroll etc
 
 ```
 
@@ -65,7 +65,7 @@ patch /enroll/:courseId          // update enrollment status like remove enroll 
 ## Supabase DB Schemas
 
 
-```http
+```
 users schema 
 RLS policy: public
 
