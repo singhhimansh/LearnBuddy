@@ -61,7 +61,7 @@ patch /enroll/:courseId           // update enrollment status like remove enroll
 ```
 ## Snapshots
 
-| Screenshots                        |
+| Screenshots                                    |Screenshots                                   |
 | ---------------------------------------------- | ---------------------------------------------- |
 | ![1737888493793](/public/images/readme/Screenshot%202025-09-03%20at%204.51.47 AM.png) | ![1737888707305](/public/images/readme/Screenshot%202025-09-03%20at%204.52.03 AM.png) |
 | ![1737888493793](/public/images/readme/Screenshot%202025-09-03%20at%204.52.15 AM.png) | ![1737888707305](/public/images/readme/Screenshot%202025-09-03%20at%204.52.33 AM.png) |
