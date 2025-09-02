@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { updateSession } from "./server/supabase/middleware";
 
-const AUTH_EXCLUDE_PATHS = ["/api/auth"];
+const AUTH_EXCLUDE_PATHS = ["/api/auth/login","/api/auth/signup","/api/auth/logout"];
 export async function middleware(request: NextRequest) {
   try {
     const { pathname } = request.nextUrl;
@@ -13,7 +13,7 @@ export async function middleware(request: NextRequest) {
 
     // Only check API routes starting with /api/ except excluded routes
     if (
-      !pathname.startsWith("/api/") ||
+      !pathname.startsWith("/api/") || 
       AUTH_EXCLUDE_PATHS.includes(pathname)
     ) {
       return NextResponse.next();

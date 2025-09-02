@@ -3,8 +3,14 @@
 import Button from "@/lib/components/Button";
 import Card from "@/lib/components/Card";
 import Input from "@/lib/components/Input";
+import APP_ROUTES from "@/lib/constants/appRoutes";
+import {
+  useLoginMutation,
+  useSignupMutation,
+} from "@/lib/store/slices/apiSlice";
 import { useFormik } from "formik";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import * as yup from "yup";
 
 const initialValues = {
@@ -39,17 +45,52 @@ const signUpSchema = yup.object({
 });
 
 export default function Login() {
+  const router = useRouter();
   const [isSigningUp, setIsSigningUp] = useState(false);
+
+  const [
+    login,
+    {
+      data: loginData,
+      isError: isLoginError,
+      error: loginError,
+      isLoading: loginLoading,
+      isSuccess: loginSuccess,
+    },
+  ] = useLoginMutation();
+  const [
+    signup,
+    {
+      data: signupData,
+      isError: isSignupError,
+      error: signupError,
+      isLoading: signupLoading,
+      isSuccess: signupSuccess,
+    },
+  ] = useSignupMutation();
 
   const formik = useFormik<typeof initialValues>({
     initialValues: initialValues,
     onSubmit: (values) => {
-      console.log(values);
+      console.log(values, isSigningUp);
+      if (isSigningUp) {
+        signup(values);
+      } else {
+        login({ email: values.email, password: values.password });
+      }
     },
     validationSchema: isSigningUp ? signUpSchema : loginSchema,
     validateOnChange: true,
     validateOnBlur: true,
   });
+
+  const isSubmitting = loginLoading || signupLoading;
+
+  useEffect(() => {
+    if (loginSuccess || signupSuccess) {
+      router.push(APP_ROUTES.DASHBOARD);
+    }
+  }, [loginSuccess, signupSuccess]);
 
   return (
     <div className="flex justify-center items-center mt-40">
@@ -76,7 +117,6 @@ export default function Login() {
                   onChange={formik.handleChange}
                 />
                 <Input
-                
                   label="Last Name"
                   name="lastname"
                   type="text"
@@ -114,10 +154,12 @@ export default function Login() {
             <div className="flex flex-col justify-end">
               <Button
                 disabled={!formik.isValid}
+                isLoading={isSubmitting}
                 label={formik.values.isSigningUp ? "Sign Up" : "Login"}
                 type="submit"
               />
               <Button
+                disabled={isSubmitting}
                 label={
                   isSigningUp
                     ? "Already have an account? Login"
