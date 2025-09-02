@@ -1,7 +1,7 @@
 "use client";
 
 import Button from "@/lib/components/Button";
-import Card from "@/lib/components/Card";
+import Card from "@/lib/components/CardContainer";
 import Input from "@/lib/components/Input";
 import APP_ROUTES from "@/lib/constants/appRoutes";
 import {

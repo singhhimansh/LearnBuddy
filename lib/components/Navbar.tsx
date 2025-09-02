@@ -72,7 +72,7 @@ export default function Navbar() {
               className="btn btn-ghost btn-circle avatar"
             >
               <div className="w-10 rounded-full">
-                <Avatar name={user?.firstname} url={user?.photoUrl} />
+                <Avatar firstName={user?.firstname} lastName={user?.lastname} url={user?.photoUrl} />
               </div>
             </div>
             </div>

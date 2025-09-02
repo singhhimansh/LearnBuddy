@@ -5,6 +5,7 @@ export type EnrolledCourse = {
   keywords?: string[];
   created_at: string;       
   description: string;
+  thumbnail: string;
   status: string;          
 };
 

@@ -41,6 +41,7 @@ export async function GET(request: NextRequest) {
           keywords: item.courses.keywords,
           created_at: item.courses.created_at,
           description: item.courses.description,
+          thumbnail: item.courses.thumbnail,
           status: item.status
         }))
 

@@ -5,6 +5,7 @@ export interface TCourse {
   description: string;
   keywords?: string[];            
   author: string;
+  thumbnail: string;
   isArchived?: boolean | null; 
 };
 

@@ -33,9 +33,11 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <StoreProvider>
-          <div className=" items-center justify-items-center min-h-screen ">
+          <div className="items-center justify-items-center min-h-screen w-full">
             <Navbar />
+            <div className="w-4/5">
             {children}
+            </div>
           </div>
         </StoreProvider>
       </body>
