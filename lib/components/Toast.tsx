@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+"use client";
+import React from "react";
 import { Slide, toast, ToastContainer, ToastOptions } from "react-toastify";
 
 type ToastType = "info" | "success" | "error" | "warning";
