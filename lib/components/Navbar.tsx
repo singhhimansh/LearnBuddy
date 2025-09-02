@@ -13,7 +13,7 @@ import Avatar from "./Avatar";
 import { User } from "../types/user.types";
 
 export default function Navbar() {
-  const user = useSelector((state: StoreState) => state.user.user as User | null);
+  const user = useSelector((state: StoreState) => state.user.user);
   const router = useRouter();
   const dispatch = useDispatch();
 
