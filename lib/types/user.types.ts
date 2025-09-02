@@ -1,3 +1,13 @@
+export type EnrolledCourse = {
+  courseId: number;
+  title: string;
+  author: string;
+  keywords?: string[];
+  created_at: string;       
+  description: string;
+  status: string;          
+};
+
 export interface User {
   id: string;
   created_at: string;
@@ -10,7 +20,10 @@ export interface User {
   dob?: string | null;
   interests?: string | null;
   updated_at?: string | null;
+  enrolledCourses?: EnrolledCourse[];
 };
+
+
 
 export interface GetUserResponse {
   message: string;

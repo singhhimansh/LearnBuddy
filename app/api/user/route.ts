@@ -28,6 +28,31 @@ export async function GET(request: NextRequest) {
         );
       }
 
+      const { data: userCourses, error: userCoursesError } = await supabase
+        .from("courses_enrolled")
+        .select("*,courses(*)")
+        .eq("user_id", userId);
+
+
+       const enrolledCourses = userCourses?.filter(item => !item.courses.isArchived)?.map(item => ({
+          courseId: item.courses.id,
+          title: item.courses.title,
+          author: item.courses.author,
+          keywords: item.courses.keywords,
+          created_at: item.courses.created_at,
+          description: item.courses.description,
+          status: item.status
+        }))
+
+      if (userCoursesError) {
+        return NextResponse.json(
+          { error: userCoursesError.message },
+          { status: 400 }
+        );
+      }
+
+      userData.enrolledCourses = enrolledCourses;
+
       return NextResponse.json(
         { message: "User fetched successfully", data: userData },
         { status: 200 }

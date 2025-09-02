@@ -11,6 +11,8 @@ export async function GET(request: NextRequest,{ params }: { params: { courseId:
     const { data, error } = await supabase.from("courses").select("*").eq("id", courseId).or('isArchived.eq.false,isArchived.is.null').single();
 
     
+
+    
     if (error) {
       return NextResponse.json(
         { error: error?.message || error || "Internal server error" },
