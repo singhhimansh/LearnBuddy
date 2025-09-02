@@ -62,7 +62,7 @@ export default function CourseCard({
       // patch api
       updateEnrollment({
         enrolmentId: courseId,
-        body: { status: "inprogress" },
+        body: { status },
       })
         .unwrap()
         .then((res) => {

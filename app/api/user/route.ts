@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
       const { data: userCourses, error: userCoursesError } = await supabase
         .from("courses_enrolled")
         .select("*,courses(*)")
-        .eq("user_id", userId);
+        .eq("user_id", userId).order("updated_at", { ascending: false });
 
 
        const enrolledCourses = userCourses?.filter(item => !item.courses.isArchived)?.map(item => ({
@@ -40,10 +40,11 @@ export async function GET(request: NextRequest) {
           author: item.courses.author,
           keywords: item.courses.keywords,
           created_at: item.courses.created_at,
+          updated_at: item.courses.updated_at,
           description: item.courses.description,
           thumbnail: item.courses.thumbnail,
           status: item.status
-        }))
+        }));
 
       if (userCoursesError) {
         return NextResponse.json(
