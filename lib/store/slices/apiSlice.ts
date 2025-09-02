@@ -1,5 +1,6 @@
 import { GetUserResponse } from "@/lib/types/user.types";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { TCoursesResponse, TCoursesContentResponse } from "@/lib/types/courses.types";
 
 const apiSlice = createApi({
   reducerPath: "api",
@@ -34,8 +35,30 @@ const apiSlice = createApi({
         method: "POST",
       }),
     }),
+    getAllCourses: builder.query<TCoursesResponse, void>({
+      query: () => ({
+        url: "/courses",
+        method: "GET",
+      }),
+    }),
+    getCourseContentById: builder.query<
+    TCoursesContentResponse,
+      { courseId: string }
+    >({
+      query: ({ courseId }) => ({
+        url: `/courses/${courseId}`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation, useSignupMutation, useGetUserQuery, useLogoutMutation } = apiSlice;
+export const {
+  useLoginMutation,
+  useSignupMutation,
+  useGetUserQuery,
+  useLogoutMutation,
+  useGetAllCoursesQuery,
+  useGetCourseContentByIdQuery,
+} = apiSlice;
 export default apiSlice;
