@@ -97,7 +97,7 @@ export default function Login() {
   }, [loginSuccess, signupSuccess, isSigningUp, signupData, loginData]);
 
   return (
-    <div className="flex justify-center items-center mt-40">
+    <div className="max-w-[500px] mx-auto flex justify-center items-center mt-40">
       <Card>
         <div className="flex justify-center">
           <h2 className="text-2xl font-bold">
