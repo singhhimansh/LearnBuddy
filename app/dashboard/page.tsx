@@ -20,9 +20,13 @@ export default function Dashboard() {
   const user = useSelector((state: StoreState) => state.user.user);
   const dispatch = useDispatch();
 
-  const { data: userquery, error: userError, isLoading: userLoading, isFetching, refetch } = useGetUserQuery(undefined, {
-  });
-
+  const {
+    data: userquery,
+    error: userError,
+    isLoading: userLoading,
+    isFetching,
+    refetch,
+  } = useGetUserQuery(undefined, {});
 
   useEffect(() => {
     if (userquery?.data) {
@@ -30,22 +34,11 @@ export default function Dashboard() {
     }
   }, [userquery]);
 
-
-
   const {
     data: coursesData,
     error: coursesError,
     isLoading: coursesLoading,
   } = useGetAllCoursesQuery();
-
-  const [
-    updateEnrollment,
-    { error: updateEnrollmentError, isLoading: updateEnrollmentLoading },
-  ] = useUpdateEnrollmentMutation();
-  const [
-    enrollCourse,
-    { error: enrollCourseError, isLoading: enrollCourseLoading },
-  ] = useEnrollCourseMutation();
 
   const availableCourses = useMemo(() => {
     const enrolledCourseIdSet = new Set(
@@ -56,49 +49,6 @@ export default function Dashboard() {
     );
     return unEnrolledCourses;
   }, [coursesData, user]);
-
-  const handleEnroll = ({
-    courseId,
-    status,
-    enrolled,
-  }: {
-    courseId: string | number;
-    status?: string;
-    enrolled?: boolean;
-  }) => {
-    if (enrolled) {
-      // patch api
-      updateEnrollment({ enrolmentId: courseId, body: { status:"inprogress" } })
-        .unwrap()
-        .then((res) => {
-          console.log(res);
-          Toast.info("Course withdrawn successfully");
-          // refetch();
-        })
-        .catch((error:any) => {
-          Toast.error(
-            error?.data?.error || error?.message || "Internal server error" 
-          );
-          console.log(error);
-        });
-    } else {
-      // post api
-      enrollCourse({ courseId })
-        .unwrap()
-        .then((res) => {
-          console.log(res);
-          Toast.success("Course enrolled successfully");
-          // refetch();
-        })
-        .catch((error:any) => {
-          console.log(error);
-          Toast.error(
-            error?.data?.error || error?.message || "Internal server error"
-          );
-          console.log(error);
-        });
-    }
-  };
 
   return (
     <main className="flex flex-col justify-start gap-4 my-10">
@@ -119,21 +69,15 @@ export default function Dashboard() {
       <section className="bg-base-200 p-5 px-8 border  border-base-300 rounded-lg">
         <h3 className="font-semibold">Your Courses</h3>
         <p className="text-sm text-base-content">Pick up where you left</p>
-        {(userLoading) && <Loader isLoading={userLoading} />}
-        { !userLoading && user?.enrolledCourses?.length! > 0 ? (
+        {userLoading && <Loader isLoading={userLoading} />}
+        {!userLoading && user?.enrolledCourses?.length! > 0 ? (
           <div className="flex  overflow-x-auto py-4 justify-start  gap-5 my-6">
-          {user?.enrolledCourses?.map((course) => (
-            <CourseCard
-              key={course.courseId}
-              enrolled={true}
-              {...course}
-              isLoading={userLoading || isFetching ||updateEnrollmentLoading }
-              handleClick={handleEnroll}
-            />
-          ))}
+            {user?.enrolledCourses?.map((course) => (
+              <CourseCard key={course.courseId} enrolled={true} {...course} />
+            ))}
           </div>
         ) : (
-            user?.enrolledCourses?.length! === 0 && <p>No courses is enrolled</p>
+          user?.enrolledCourses?.length! === 0 && <p>No courses is enrolled</p>
         )}
       </section>
 
@@ -148,9 +92,7 @@ export default function Dashboard() {
                 key={course.id}
                 courseId={course.id}
                 enrolled={false}
-                isLoading={coursesLoading || enrollCourseLoading }
                 {...course}
-                handleClick={handleEnroll}
               />
             ))}
           </div>

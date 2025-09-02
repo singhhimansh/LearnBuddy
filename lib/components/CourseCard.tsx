@@ -2,6 +2,12 @@ import Image from "next/image";
 import Badge from "./Badge";
 import { CoursesStatusMap } from "../utils/common";
 import Button from "./Button";
+import {
+  useEnrollCourseMutation,
+  useUpdateEnrollmentMutation,
+} from "../store/slices/apiSlice";
+import Toast from "./Toast";
+import { useCallback } from "react";
 
 type CourseCardProps = {
   title: string;
@@ -13,10 +19,18 @@ type CourseCardProps = {
   enrolled?: boolean;
   courseId: string | number;
   isLoading?: boolean;
-  handleClick: ({ courseId, status, enrolled }: { courseId: string | number; status?: string; enrolled?: boolean })=> void
+  handleClick?: ({
+    courseId,
+    status,
+    enrolled,
+  }: {
+    courseId: string | number;
+    status?: string;
+    enrolled?: boolean;
+  }) => void;
 };
 
-export default function CourseCard({  
+export default function CourseCard({
   courseId,
   title,
   description,
@@ -28,6 +42,58 @@ export default function CourseCard({
   status,
   handleClick,
 }: CourseCardProps) {
+  const [
+    updateEnrollment,
+    { error: updateEnrollmentError, isLoading: updateEnrollmentLoading },
+  ] = useUpdateEnrollmentMutation();
+  const [
+    enrollCourse,
+    { error: enrollCourseError, isLoading: enrollCourseLoading },
+  ] = useEnrollCourseMutation();
+
+  const handleEnroll = useCallback(({
+    courseId,
+    status,
+  }: {
+    courseId: string | number;
+    status?: string;
+  }) => {
+    if (enrolled) {
+      // patch api
+      updateEnrollment({
+        enrolmentId: courseId,
+        body: { status: "inprogress" },
+      })
+        .unwrap()
+        .then((res) => {
+          console.log(res);
+          Toast.info("Course withdrawn successfully");
+          // refetch();
+        })
+        .catch((error: any) => {
+          Toast.error(
+            error?.data?.error || error?.message || "Internal server error"
+          );
+          console.log(error);
+        });
+    } else {
+      // post api
+      enrollCourse({ courseId })
+        .unwrap()
+        .then((res) => {
+          console.log(res);
+          Toast.success("Course enrolled successfully");
+          // refetch();
+        })
+        .catch((error: any) => {
+          console.log(error);
+          Toast.error(
+            error?.data?.error || error?.message || "Internal server error"
+          );
+          console.log(error);
+        });
+    }
+  }, [enrolled,updateEnrollment,enrollCourse]);
   return (
     <div className="card bg-base-100 min-w-88 max-w-88 shadow-sm hover:shadow-lg hover:scale-[1.02]  transition-all cursor-pointer">
       {/* <Image width={100} height={100} src={thumbnail} alt={title}  /> */}
@@ -69,11 +135,10 @@ export default function CourseCard({
           <Button
             sx={{ button: "w-full" }}
             label={enrolled ? "Withdraw" : "Enroll Now"}
-            isLoading={isLoading}
+            isLoading={updateEnrollmentLoading || enrollCourseLoading}
             onClick={() =>
-              handleClick({
+              handleEnroll({
                 courseId,
-                enrolled,
                 status: enrolled ? "WITHDRAWN" : "",
               })
             }
