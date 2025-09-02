@@ -10,7 +10,7 @@ import { setUser } from "../store/slices/userSlice";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import Avatar from "./Avatar";
-import { User } from "../types/user.types";
+import Loader from "./Loader";
 
 export default function Navbar() {
   const user = useSelector((state: StoreState) => state.user.user);
@@ -51,7 +51,7 @@ export default function Navbar() {
       });
   };
 
-  if (isUserLoading) return <div>Loading...</div>;
+  if (isUserLoading) return <Loader isLoading={isUserLoading} overlay />;
 
   return (
     <div className="navbar bg-base-100 shadow-sm">
@@ -83,7 +83,6 @@ export default function Navbar() {
               <li>
                 <a className="justify-between">
                   Profile
-                  <span className="badge">New</span>
                 </a>
               </li>
               <li>
