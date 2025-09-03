@@ -2,6 +2,7 @@
 import Avatar from "@/lib/components/Avatar";
 import Card from "@/lib/components/CardContainer";
 import CourseCard from "@/lib/components/CourseCard";
+import CoursesCarousel from "@/lib/components/CoursesCarousel";
 import Loader from "@/lib/components/Loader";
 import Toast from "@/lib/components/Toast";
 import { StoreState } from "@/lib/store";
@@ -23,7 +24,7 @@ export default function Dashboard() {
     data: userquery,
     error: userError,
     isLoading: userLoading,
-    isFetching,
+    isFetching: userFetching,
     refetch,
   } = useGetUserQuery(undefined, {});
 
@@ -65,40 +66,31 @@ export default function Dashboard() {
         </div>
       </Card>
 
-      <section className="bg-base-200 p-5 px-8 border  border-base-300 rounded-lg">
-        <h3 className="font-semibold">Your Courses <span>{user?.enrolledCourses?.length! > 0 && `(${user?.enrolledCourses?.length})`}</span></h3>
-        <p className="text-sm text-base-content">Pick up where you left</p>
-        {userLoading && <Loader isLoading={userLoading} />}
-        {!userLoading && user?.enrolledCourses?.length! > 0 ? (
-          <div className="flex  overflow-x-auto py-4 justify-start  gap-5 my-6">
-            {user?.enrolledCourses?.map((course) => (
-              <CourseCard key={course.courseId} enrolled={true} {...course} />
-            ))}
-          </div>
-        ) : (
-          user?.enrolledCourses?.length! === 0 && <p>No courses is enrolled</p>
-        )}
-      </section>
+      <CoursesCarousel
+        title={
+          <span>
+            Your Courses{" "}
+            <span>
+              {user?.enrolledCourses?.length! > 0 &&
+                `(${user?.enrolledCourses?.length})`}
+            </span>
+          </span>
+        }
+        subtitle="Pick up where you left"
+        isLoading={userLoading || userFetching}
+        coursesList={user?.enrolledCourses}
+        isEnrolled={true}
+        fallback="No courses is enrolled!"
+      />
 
-      <section className="bg-base-200 p-5  px-8 border border-base-300 rounded-lg  ">
-        <h3 className="font-semibold">What's trending</h3>
-        <p className="text-sm text-base-content">Recommended courses for you</p>
-        {coursesLoading && <Loader isLoading={coursesLoading} />}
-        {!coursesLoading && availableCourses?.length! > 0 ? (
-          <div className="flex  overflow-x-auto py-4 justify-start  gap-5 my-6">
-            {availableCourses?.map((course) => (
-              <CourseCard
-                key={course.id}
-                courseId={course.id}
-                enrolled={false}
-                {...course}
-              />
-            ))}
-          </div>
-        ) : (
-          availableCourses?.length! === 0 && <p>No courses found</p>
-        )}
-      </section>
+      <CoursesCarousel
+        title={"What's trending"}
+        subtitle="Recommended courses for you"
+        isLoading={coursesLoading}
+        coursesList={availableCourses}
+        isEnrolled={false}
+        fallback="No courses found!"
+      />
     </main>
   );
 }

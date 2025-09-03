@@ -7,7 +7,7 @@ import { useEffect } from "react";
 export default function NotFound() {
   const router = useRouter();
   useEffect(() => {
-    router.push(APP_ROUTES.DASHBOARD);
+    router.push(APP_ROUTES.LOGIN);
   }, []);
 
   return (
