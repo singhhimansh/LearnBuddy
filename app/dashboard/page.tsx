@@ -77,7 +77,7 @@ export default function Dashboard() {
           </span>
         }
         subtitle="Pick up where you left"
-        isLoading={userLoading || userFetching}
+        isLoading={userLoading}
         coursesList={user?.enrolledCourses}
         isEnrolled={true}
         fallback="No courses is enrolled!"

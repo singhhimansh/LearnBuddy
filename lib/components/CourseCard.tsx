@@ -4,6 +4,7 @@ import { CoursesStatusMap } from "../utils/common";
 import Button from "./Button";
 import {
   useEnrollCourseMutation,
+  useGetUserQuery,
   useUpdateEnrollmentMutation,
 } from "../store/slices/apiSlice";
 import Toast from "./Toast";
@@ -18,16 +19,6 @@ type CourseCardProps = {
   status?: string;
   enrolled?: boolean;
   courseId: string | number;
-  isLoading?: boolean;
-  handleClick?: ({
-    courseId,
-    status,
-    enrolled,
-  }: {
-    courseId: string | number;
-    status?: string;
-    enrolled?: boolean;
-  }) => void;
 };
 
 export default function CourseCard({
@@ -37,19 +28,26 @@ export default function CourseCard({
   thumbnail,
   keywords,
   author,
-  isLoading,
   enrolled,
   status,
-  handleClick,
 }: CourseCardProps) {
+  const {isFetching: isUserFetching} = useGetUserQuery(undefined, {
+    skip: false,
+  });
+
+
   const [
     updateEnrollment,
-    { error: updateEnrollmentError, isLoading: updateEnrollmentLoading },
+    { error: updateEnrollmentError, isLoading: updateEnrollmentLoading, isSuccess: updateEnrollmentSuccess },
   ] = useUpdateEnrollmentMutation();
   const [
     enrollCourse,
-    { error: enrollCourseError, isLoading: enrollCourseLoading },
+    { error: enrollCourseError, isLoading: enrollCourseLoading, isSuccess: enrollCourseSuccess },
   ] = useEnrollCourseMutation();
+
+
+  const isSubmittingEnroll = updateEnrollmentLoading || (updateEnrollmentSuccess && isUserFetching);
+  const isSubmittingWithdraw = enrollCourseLoading || (enrollCourseSuccess && isUserFetching);
 
   const handleEnroll = useCallback(({
     courseId,
@@ -132,7 +130,7 @@ export default function CourseCard({
           <Button
             sx={{ button: "w-full" }}
             label={enrolled ? "Withdraw" : "Enroll Now"}
-            isLoading={updateEnrollmentLoading || enrollCourseLoading}
+            isLoading={isSubmittingEnroll || isSubmittingWithdraw}
             onClick={() =>
               handleEnroll({
                 courseId,
