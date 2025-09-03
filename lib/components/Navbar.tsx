@@ -14,8 +14,8 @@ import Loader from "./Loader";
 import Toast from "./Toast";
 
 export default function Navbar() {
-  const user = useSelector((state: StoreState) => state.user.user);
   const router = useRouter();
+  const user = useSelector((state: StoreState) => state.user.user);
   const dispatch = useDispatch();
 
   const [logout] = useLogoutMutation();
@@ -24,12 +24,9 @@ export default function Navbar() {
     data,
     isSuccess: isUserSuccess,
     isLoading: isUserLoading,
-  } = useGetUserQuery(
-    undefined,
-    {
-      skip: Boolean(user),
-    }
-  );
+  } = useGetUserQuery(undefined, {
+    skip: Boolean(user),
+  });
 
   useEffect(() => {
     if (isUserSuccess && data?.data) {
@@ -40,12 +37,12 @@ export default function Navbar() {
   const isLoggedIn = Boolean(user);
 
   const handleLogout = () => {
-    logout({})
+    logout()
       .unwrap()
       .then(() => {
-        Toast.success("User logged out!");
         dispatch(setUser(null));
         router.push(APP_ROUTES.LOGIN);
+        Toast.success("User logged out!");
       })
       .catch((err) => {
         Toast.error("Logout failed");
@@ -65,27 +62,28 @@ export default function Navbar() {
         {isLoggedIn ? (
           <div className="dropdown dropdown-end">
             <div className="flex items-center gap-2">
-            <p>Hi {user?.firstname},</p>
-            
+              <p>Hi {user?.firstname},</p>
 
-            <div
-              tabIndex={0}
-              role="button"
-              className="btn btn-ghost btn-circle avatar"
-            >
-              <div className="w-10 rounded-full">
-                <Avatar firstName={user?.firstname} lastName={user?.lastname} url={user?.photoUrl} />
+              <div
+                tabIndex={0}
+                role="button"
+                className="btn btn-ghost btn-circle avatar"
+              >
+                <div className="w-10 rounded-full">
+                  <Avatar
+                    firstName={user?.firstname}
+                    lastName={user?.lastname}
+                    url={user?.photoUrl}
+                  />
+                </div>
               </div>
-            </div>
             </div>
             <ul
               tabIndex={0}
               className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
             >
               <li>
-                <a className="justify-between">
-                  Profile
-                </a>
+                <a className="justify-between">Profile</a>
               </li>
               {/* <li>
                 <a>Settings</a>

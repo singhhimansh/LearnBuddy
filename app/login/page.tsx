@@ -10,6 +10,7 @@ import {
   useSignupMutation,
 } from "@/lib/store/slices/apiSlice";
 import { setUser } from "@/lib/store/slices/userSlice";
+import { createClient } from "@/server/supabase/browserClient";
 import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -51,6 +52,26 @@ export default function Login() {
   const router = useRouter();
   const dispatch = useDispatch();
   const [isSigningUp, setIsSigningUp] = useState(false);
+
+  const fetchUser = async () => {
+    const supabase = await createClient();
+
+    const {
+      data: { session },
+      error,
+    } = await supabase.auth.getSession();
+    if (session) {
+      console.log(error);
+      router.push(APP_ROUTES.DASHBOARD);
+    } else {
+      dispatch(setUser(null));
+      router.push(APP_ROUTES.LOGIN);
+    }
+  };
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
 
   const [
     login,
@@ -170,11 +191,12 @@ export default function Login() {
               <Button
                 disabled={!formik.isValid}
                 isLoading={isSubmitting}
-                label={formik.values.isSigningUp ? "Sign Up" : "Login"}
+                label={isSigningUp ? "Sign Up" : "Login"}
                 type="submit"
               />
               <Button
                 disabled={isSubmitting}
+                type="button"
                 label={
                   isSigningUp
                     ? "Already have an account? Login"
@@ -183,7 +205,7 @@ export default function Login() {
                 name="isSigningUp"
                 variant="neutral"
                 sx={{ label: "text-gray-500 text-xs underline m-0 p-0 w-fit" }}
-                onClick={() => setIsSigningUp((i) => !isSigningUp)}
+                onClick={() => setIsSigningUp((i) => !i)}
               />
             </div>
           </div>
