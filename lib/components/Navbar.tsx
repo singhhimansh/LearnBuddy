@@ -4,7 +4,7 @@ import en from "../constants/en";
 import Button from "./Button";
 import { useSelector } from "react-redux";
 import { StoreState } from "../store";
-import { useGetUserQuery, useLogoutMutation } from "../store/slices/apiSlice";
+import apiSlice, { useGetUserQuery, useLogoutMutation } from "../store/slices/apiSlice";
 import APP_ROUTES from "../constants/appRoutes";
 import { setUser } from "../store/slices/userSlice";
 import { useDispatch } from "react-redux";
@@ -24,6 +24,7 @@ export default function Navbar() {
     data,
     isSuccess: isUserSuccess,
     isLoading: isUserLoading,
+    
   } = useGetUserQuery(undefined, {
     skip: Boolean(user),
   });
@@ -41,6 +42,7 @@ export default function Navbar() {
       .unwrap()
       .then(() => {
         dispatch(setUser(null));
+        dispatch(apiSlice.util.resetApiState());
         router.push(APP_ROUTES.LOGIN);
         Toast.success("User logged out!");
       })

@@ -5,7 +5,7 @@ import Card from "@/lib/components/CardContainer";
 import Input from "@/lib/components/Input";
 import Toast from "@/lib/components/Toast";
 import APP_ROUTES from "@/lib/constants/appRoutes";
-import {
+import apiSlice, {
   useLoginMutation,
   useSignupMutation,
 } from "@/lib/store/slices/apiSlice";
@@ -65,6 +65,7 @@ export default function Login() {
       router.push(APP_ROUTES.DASHBOARD);
     } else {
       dispatch(setUser(null));
+      dispatch(apiSlice.util.resetApiState());
       router.push(APP_ROUTES.LOGIN);
     }
   };
@@ -98,9 +99,29 @@ export default function Login() {
     initialValues: initialValues,
     onSubmit: (values) => {
       if (isSigningUp) {
-        signup(values);
+        signup(values)
+          .unwrap()
+          .then((res) => {
+            dispatch(setUser(res?.data));
+            Toast.success("Sign up successful");
+            router.push(APP_ROUTES.DASHBOARD);
+          })
+          .catch((error: any) => {
+            console.log(error);
+            Toast.error(error?.data?.error || error?.error || "Sign up failed");
+          });
       } else {
-        login({ email: values.email, password: values.password });
+        login({ email: values.email, password: values.password })
+          .unwrap()
+          .then((res) => {
+            dispatch(setUser(res?.data));
+            Toast.success("Login successful");
+            router.push(APP_ROUTES.DASHBOARD);
+          })
+          .catch((error: any) => {
+            console.log(error);
+            Toast.error(error?.data?.error || error?.error || "Login failed");
+          });
       }
     },
     validationSchema: isSigningUp ? signUpSchema : loginSchema,
@@ -110,23 +131,7 @@ export default function Login() {
 
   const isSubmitting = loginLoading || signupLoading;
 
-  useEffect(() => {
-    if (loginSuccess || signupSuccess) {
-      Toast.success(isSigningUp ? "Sign up successful" : "Login successful");
-      dispatch(setUser(isSigningUp ? signupData?.data : loginData?.data));
-      router.push(APP_ROUTES.DASHBOARD);
-    } else if (loginError || signupError) {
-      Toast.error(isSigningUp ? "Sign up failed" : "Login failed");
-    }
-  }, [
-    loginSuccess,
-    signupSuccess,
-    isSigningUp,
-    signupData,
-    loginData,
-    loginError,
-    signupError,
-  ]);
+
 
   return (
     <div className="max-w-[500px] mx-auto flex justify-center items-center mt-40">
